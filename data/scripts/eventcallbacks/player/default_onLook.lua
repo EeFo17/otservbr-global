@@ -84,7 +84,6 @@ ec.onLook = function(self, thing, position, distance)
 			end
 		end
 	end
-	description = onItemSetLook(self, thing, position, distance, description)
 	return description
 end
 
