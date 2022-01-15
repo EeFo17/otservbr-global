@@ -537,6 +537,7 @@ class LuaScriptInterface
 
 		// table
 		static int luaTableCreate(lua_State* L);
+		static int luaTablePack(lua_State* L);
 
 		// Spdlog
 		static int luaSpdlogInfo(lua_State* L);
