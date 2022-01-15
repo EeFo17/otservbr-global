@@ -15,3 +15,6 @@ dofile('data/lib/others/others.lua')
 
 -- Quests library
 dofile('data/lib/quests/quest.lua')
+
+-- EventCallBack
+dofile('data/lib/event_callbacks.lua')
