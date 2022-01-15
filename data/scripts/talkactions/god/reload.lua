@@ -51,6 +51,12 @@ function reload.onSay(player, words, param)
 		return false
 	end
 
+		-- need to clear EventCallback.data or we end up having duplicated events on /reload scripts
+	if table.contains({RELOAD_TYPE_SCRIPTS, RELOAD_TYPE_ALL}, reloadType) then
+		EventCallback:clear()
+
+	end
+	
 	logCommand(player, words, param)
 
 	local reloadType = reloadTypes[param:lower()]

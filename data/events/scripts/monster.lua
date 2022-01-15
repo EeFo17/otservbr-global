@@ -1,59 +1,6 @@
 function Monster:onDropLoot(corpse)
-	if configManager.getNumber(configKeys.RATE_LOOT) == 0 then
-		return
-	end
-
-	local mType = self:getType()
-	if mType:isRewardBoss() then
-		corpse:registerReward()
-		return
-	end
-
-	local player = Player(corpse:getCorpseOwner())
-	local mType = self:getType()
-	if not player or player:getStamina() > 840 then
-		local monsterLoot = mType:getLoot()
-		for i = 1, #monsterLoot do
-			local boolCharm = false
-			if player then
-				local charmType = player:getCharmMonsterType(CHARM_GUT)
-				if charmType and charmType:raceId() == mType:raceId() then
-					boolCharm = true
-				end
-			end
-		
-			local item = corpse:createLootItem(monsterLoot[i], boolCharm)
-			if self:getName():lower() == (Game.getBoostedCreature()):lower() then
-				local itemBoosted = corpse:createLootItem(monsterLoot[i], boolCharm)
-			end
-			if not item then
-				Spdlog.warn("[Monster:onDropLoot] - Could not add loot item to corpse.")
-			end
-		end
-
-		if player then
-			local text = {}
-			if self:getName():lower() == (Game.getBoostedCreature()):lower() then
-				 text = ("Loot of %s: %s (boosted loot)"):format(mType:getNameDescription(), corpse:getContentDescription())
-			else
-				 text = ("Loot of %s: %s"):format(mType:getNameDescription(), corpse:getContentDescription())			
-			end
-			local party = player:getParty()
-			if party then
-				party:broadcastPartyLoot(text)
-			else
-				player:sendTextMessage(MESSAGE_LOOT, text)
-			end
-			player:updateKillTracker(self, corpse)
-		end
-	else
-		local text = ("Loot of %s: nothing (due to low stamina)"):format(mType:getNameDescription())
-		local party = player:getParty()
-		if party then
-			party:broadcastPartyLoot(text)
-		else
-			player:sendTextMessage(MESSAGE_LOOT, text)
-		end
+	if hasEventCallback(EVENT_CALLBACK_ONDROPLOOT) then
+		EventCallback(EVENT_CALLBACK_ONDROPLOOT, self, corpse)
 	end
 end
 
@@ -108,7 +55,11 @@ function Monster:onSpawn(position)
 					self:remove()
 				end
 			end
-			return true
+				if hasEventCallback(EVENT_CALLBACK_ONSPAWN) then
+		return EventCallback(EVENT_CALLBACK_ONSPAWN, self, position, startup, artificial)
+	else
+		return true
+	end
 		end
 	end
 end
